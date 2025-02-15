@@ -1,12 +1,16 @@
 package com.checkit.portfolio.service;
 
 import com.checkit.portfolio.jwt.JwtService;
+import com.checkit.portfolio.model.AuthResponse;
+import com.checkit.portfolio.model.LoginRequest;
 import com.checkit.portfolio.model.RegisterRequest;
 import com.checkit.portfolio.model.RegisterResponse;
 import com.checkit.portfolio.model.User;
 import com.checkit.portfolio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +26,20 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    
+    public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        UserDetails userDetails=userRepository.findByEmail(request.getEmail()).orElseThrow();
+        String token=jwtService.getToken(userDetails);
+		Optional<User> user = userRepository.findByEmail(request.getEmail());
+
+		return AuthResponse.builder()
+				.token(token)
+				.id(user.get().getId())
+				.username(user.get().getUsername1())
+				.email(user.get().getEmail())
+				.build();
+    }
 
     public RegisterResponse register(RegisterRequest request) {
         String usernameSuggestion = "";
