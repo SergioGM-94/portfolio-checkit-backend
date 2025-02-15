@@ -1,5 +1,7 @@
 package com.checkit.portfolio.controller;
 
+import com.checkit.portfolio.model.AuthResponse;
+import com.checkit.portfolio.model.LoginRequest;
 import com.checkit.portfolio.model.RegisterRequest;
 import com.checkit.portfolio.model.RegisterResponse;
 import com.checkit.portfolio.service.AuthService;
@@ -18,6 +20,12 @@ public class AuthController {
 
     @Autowired
     private  AuthService authService;
+    
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request)
+    {
+        return ResponseEntity.ok(authService.login(request));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {

@@ -35,6 +35,11 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
+    
+    @Override
+    public String getUsername() {
+        return this.getEmail();  
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -54,6 +59,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+    
+    public String getUsername1() {
+        return this.username;
     }
 
 }
